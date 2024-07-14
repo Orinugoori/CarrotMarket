@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">CarrotMarketClone</string>
+
+    <string name="manner_temperature"><u>매너온도</u></string>
 </resources>
