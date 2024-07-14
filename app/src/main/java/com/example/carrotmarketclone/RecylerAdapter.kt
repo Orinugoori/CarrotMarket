@@ -6,12 +6,33 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 
 
-class RecylerAdapter(val mItems : MutableList<MyItem>) : RecyclerView.Adapter<RecylerAdapter.Holder>(){
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecylerAdapter.Holder {
+class RecyclerAdapter(val mItems : MutableList<MyItem>) : ListAdapter<MyItem,RecyclerAdapter.Holder>(object : DiffUtil.ItemCallback<MyItem>() {
+
+    override fun areItemsTheSame(oldItem: MyItem, newItem: MyItem): Boolean {
+        return oldItem.number == newItem.number
+    }
+
+    override fun areContentsTheSame(oldItem: MyItem, newItem: MyItem): Boolean {
+        return oldItem == newItem
+    }
+
+
+}) {
+
+    fun removeItem(position: Int){
+        if(position in 0 until mItems.size){
+            mItems.removeAt(position)
+            notifyItemRemoved(position)
+            notifyDataSetChanged()
+        }
+    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerAdapter.Holder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.holder,parent,false)
         return Holder(itemView)
     }
@@ -20,13 +41,23 @@ class RecylerAdapter(val mItems : MutableList<MyItem>) : RecyclerView.Adapter<Re
         fun onClick(view: View, position: Int)
     }
 
-    var itemClick : ItemClick? = null
+    interface ItemLongClick{
+        fun onLongClick(view: View, position: Int) : Boolean
+    }
 
-    override fun onBindViewHolder(holder: RecylerAdapter.Holder, position: Int) {
+    var itemClick : ItemClick? = null
+    var itemLongClick : ItemLongClick? = null
+
+    override fun onBindViewHolder(holder: RecyclerAdapter.Holder, position: Int) {
         holder.itemView.setOnClickListener{
             itemClick?.onClick(it,position)
         }
 
+        holder.itemView.setOnLongClickListener {
+            itemLongClick?.onLongClick(it,position) ?: false
+        }
+
+        val item = mItems[position]
         holder.photo.setImageResource(mItems[position].photo)
         holder.name.text = mItems[position].name
         holder.address.text = mItems[position].address
@@ -43,6 +74,8 @@ class RecylerAdapter(val mItems : MutableList<MyItem>) : RecyclerView.Adapter<Re
        return mItems.size
     }
 
+
+
     inner class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val photo : ImageView = view.findViewById(R.id.iv_photo)
         val name : TextView = view.findViewById(R.id.tv_name)
@@ -52,6 +85,7 @@ class RecylerAdapter(val mItems : MutableList<MyItem>) : RecyclerView.Adapter<Re
         val likes : TextView = view.findViewById(R.id.tv_heart)
 
     }
+
 }
 fun priceRegex(priceString: String): String {
     var finalPrice = ""
@@ -65,4 +99,6 @@ fun priceRegex(priceString: String): String {
     return finalPrice
 
 }
+
+
 

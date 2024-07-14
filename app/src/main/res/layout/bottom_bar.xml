@@ -12,7 +12,7 @@
         android:id="@+id/ic_heart"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:src="@drawable/ic_heart"
+        android:src="@drawable/selector_heart"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="16dp"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -12,9 +12,12 @@ data class MyItem(
     val seller : String,
     val price : Int,
     val address : String,
-    val likes : Int,
+    var likes : Int,
     val chat : Int
 ) : Parcelable
+
+val dataList : MutableList<MyItem> = getReviewList()
+
 
 fun getReviewList() : MutableList<MyItem> {
 
@@ -151,10 +154,22 @@ fun getReviewList() : MutableList<MyItem> {
         )
     )
 
-
-
     return dataList
-
 
 }
 
+fun addLikes(number : Int){
+    if (number in 1..dataList.size) {
+        val item = dataList[number-1]
+        val updatedItem = item.copy(likes = item.likes + 1)
+        dataList[number -1] = updatedItem
+    }
+}
+
+fun removeLikes(number: Int){
+    if (number in 1 .. dataList.size){
+        val item = dataList[number-1]
+        val updatedItem = item.copy(likes = item.likes -1)
+        dataList[number-1] = updatedItem
+    }
+}
