@@ -163,13 +163,21 @@ fun addLikes(number : Int){
         val item = dataList[number-1]
         val updatedItem = item.copy(likes = item.likes + 1)
         dataList[number -1] = updatedItem
+
+        val myInterestItem = MyInterestObject.myInterestList[number-1]
+        val updatedmyInterestItem = myInterestItem.copy(likes = true)
+        MyInterestObject.myInterestList[number-1] = updatedmyInterestItem
     }
 }
 
 fun removeLikes(number: Int){
     if (number in 1 .. dataList.size){
         val item = dataList[number-1]
-        val updatedItem = item.copy(likes = item.likes -1)
+        val updatedItem = item.copy(likes = item.likes - 1)
         dataList[number-1] = updatedItem
+
+        val myInterestItem = MyInterestObject.myInterestList[number-1]
+        val updatedmyInterestItem = myInterestItem.copy(likes = false)
+        MyInterestObject.myInterestList[number-1] = updatedmyInterestItem
     }
 }

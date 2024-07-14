@@ -14,10 +14,7 @@ import com.example.carrotmarketclone.databinding.DescriptionBinding
 import com.example.carrotmarketclone.databinding.ProfileBarBinding
 import com.google.android.material.snackbar.Snackbar
 
-var isPressed : Boolean? = null
 class DetailActivity : AppCompatActivity() {
-
-
 
     private lateinit var binding: ActivityDetailBinding
     private lateinit var profileBarBinding: ProfileBarBinding
@@ -62,38 +59,36 @@ class DetailActivity : AppCompatActivity() {
 
 
 
-        //좋아요 버튼 누를시
-        val likeBtn = bottomBarBinding.icHeart
 
         //좋아요 버튼 색깔 상태
-        if(isPressed==null || isPressed ==false){
-            likeBtn.setImageResource(R.drawable.ic_heart)
+        if(MyInterestObject.myInterestList[dataList.number -1].likes == true){
+            bottomBarBinding.icHeart.setImageResource(R.drawable.ic_heart_colored)
         }else{
-            likeBtn.setImageResource(R.drawable.ic_heart_colored)
+            bottomBarBinding.icHeart.setImageResource(R.drawable.ic_heart)
         }
 
 
+
+        //좋아요 버튼 누를시
+        val likeBtn = bottomBarBinding.icHeart
+
         likeBtn.setOnClickListener {
 
-            if(isPressed == null || isPressed == false){
+            if(MyInterestObject.myInterestList[dataList.number-1].likes == false){
                 addLikes(dataList.number)
                 val snackbar = Snackbar.make(it, "관심 목록에 추가하였습니다",Snackbar.LENGTH_SHORT)
                 snackbar.show()
-                isPressed = true
+                MyInterestObject.myInterestList[dataList.number-1].likes = true
                 likeBtn.setImageResource(R.drawable.ic_heart_colored)
             }else{
                 removeLikes(dataList.number)
                 val snackbar = Snackbar.make(it,"관심목록에서 제거하였습니다",Snackbar.LENGTH_SHORT)
                 snackbar.show()
-                isPressed = false
+                MyInterestObject.myInterestList[dataList.number-1].likes = false
                 likeBtn.setImageResource(R.drawable.ic_heart)
 
             }
         }
-
-
-
-
 
     }
 }

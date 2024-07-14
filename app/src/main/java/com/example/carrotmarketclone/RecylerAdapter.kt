@@ -28,7 +28,6 @@ class RecyclerAdapter(val mItems : MutableList<MyItem>) : ListAdapter<MyItem,Rec
     fun removeItem(position: Int){
         if(position in 0 until mItems.size){
             mItems.removeAt(position)
-            notifyItemRemoved(position)
             notifyDataSetChanged()
         }
     }
@@ -63,7 +62,14 @@ class RecyclerAdapter(val mItems : MutableList<MyItem>) : ListAdapter<MyItem,Rec
         holder.address.text = mItems[position].address
         holder.price.text = priceRegex(mItems[position].price.toString())
         holder.chat.text = mItems[position].chat.toString()
-        holder.likes.text = mItems[position].likes.toString()
+        holder.likes.text = mItems[item.number-1].likes.toString()
+
+        if (MyInterestObject.myInterestList[item.number-1].likes){
+            holder.icLikes.setImageResource(R.drawable.ic_heart_colored)
+        }else{
+            holder.icLikes.setImageResource(R.drawable.ic_heart)
+        }
+
     }
 
     override fun getItemId(position: Int): Long {
@@ -83,6 +89,7 @@ class RecyclerAdapter(val mItems : MutableList<MyItem>) : ListAdapter<MyItem,Rec
         val price : TextView = view.findViewById(R.id.tv_price)
         val chat : TextView = view.findViewById(R.id.tv_chat)
         val likes : TextView = view.findViewById(R.id.tv_heart)
+        val icLikes : ImageView = view.findViewById(R.id.ic_heart)
 
     }
 

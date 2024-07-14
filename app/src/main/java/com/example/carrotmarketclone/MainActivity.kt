@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
         binding.recyclerView.apply {
             val adapter = RecyclerAdapter(dataList)
             this.adapter = adapter
@@ -57,6 +58,7 @@ class MainActivity : AppCompatActivity() {
                         .setIcon(R.drawable.ic_apple)
                         .setPositiveButton("삭제"){dialog, which ->
                             adapter.removeItem(position)
+                            MyInterestObject.removeInterestItem(position)
                         }
                         .setNegativeButton("취소",null)
                         .create()
@@ -70,8 +72,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         val floatingBtn = binding.floatingBtn
-        val fadeIn = AlphaAnimation(0f, 1f).apply { duration = 300 }
-        val fadeOut = AlphaAnimation(1f, 0f).apply { duration = 300 }
+        val fadeIn = AlphaAnimation(0f, 1f).apply { duration = 400 }
+        val fadeOut = AlphaAnimation(1f, 0f).apply { duration = 400 }
         var isTop = true
 
         binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
