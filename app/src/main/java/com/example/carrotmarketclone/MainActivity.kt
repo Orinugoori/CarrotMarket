@@ -97,8 +97,6 @@ class MainActivity : AppCompatActivity() {
 
         //시스템 뒤로가기 누를때
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
-
-
     }
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true){
