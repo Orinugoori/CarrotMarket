@@ -1,6 +1,6 @@
 package com.example.carrotmarketclone
 
-import android.app.Notification
+
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -15,6 +15,10 @@ import android.view.View
 import android.view.animation.AlphaAnimation
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
@@ -30,6 +34,8 @@ import com.example.carrotmarketclone.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var recyclerAdapter: RecyclerAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -45,44 +51,31 @@ class MainActivity : AppCompatActivity() {
             notification()
         }
 
+        val itemClick = { item : MyItem, position:Int ->
+            val intent = Intent(this@MainActivity, DetailActivity::class.java)
+            intent.putExtra("position",position)
+            startActivity(intent)
+        }
 
+        val itemLongClick = {item : MyItem, position : Int ->
+            AlertDialog.Builder(this@MainActivity)
+                .setMessage("해당 게시글을 삭제하시겠습니까?")
+                .setIcon(R.drawable.ic_apple)
+                .setPositiveButton("삭제") { dialog, which ->
+                    recyclerAdapter.removeItem(position)
+                }
+                .setNegativeButton("취소", null)
+                .create()
+                .show()
+        }
 
-
+        recyclerAdapter = RecyclerAdapter(MyItemObject.dataList, itemClick,itemLongClick)
 
         binding.recyclerView.apply {
-            val adapter = RecyclerAdapter(dataList)
-            this.adapter = adapter
+            this.adapter = recyclerAdapter
             this.layoutManager = LinearLayoutManager(this@MainActivity)
             val decoration = DividerItemDecoration(this@MainActivity, VERTICAL)
             this.addItemDecoration(decoration)
-
-            adapter.itemClick = object : RecyclerAdapter.ItemClick {
-                override fun onClick(view: View, position: Int) {
-                    val intent = Intent(this@MainActivity, DetailActivity::class.java)
-                    intent.putExtra("dataList", dataList[position])
-                    startActivity(intent)
-                }
-            }
-
-            adapter.itemLongClick = object : RecyclerAdapter.ItemLongClick {
-                override fun onLongClick(view: View, position: Int): Boolean {
-
-                    AlertDialog.Builder(this@MainActivity)
-                        .setMessage("해당 게시글을 삭제하시겠습니까?")
-                        .setIcon(R.drawable.ic_apple)
-                        .setPositiveButton("삭제") { dialog, which ->
-                            adapter.removeItem(position)
-                            MyInterestObject.removeInterestItem(position)
-                        }
-                        .setNegativeButton("취소", null)
-                        .create()
-                        .show()
-
-                    return true
-
-
-                }
-            }
         }
 
         val floatingBtn = binding.floatingBtn
@@ -111,6 +104,11 @@ class MainActivity : AppCompatActivity() {
 
         //시스템 뒤로가기 누를때
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        recyclerAdapter.notifyDataSetChanged()
     }
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {

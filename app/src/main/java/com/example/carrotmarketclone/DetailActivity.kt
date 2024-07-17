@@ -1,18 +1,23 @@
 package com.example.carrotmarketclone
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.carrotmarketclone.databinding.ActivityDetailBinding
-import com.example.carrotmarketclone.databinding.ActivityMainBinding
 import com.example.carrotmarketclone.databinding.BottomBarBinding
 import com.example.carrotmarketclone.databinding.DescriptionBinding
 import com.example.carrotmarketclone.databinding.ProfileBarBinding
 import com.google.android.material.snackbar.Snackbar
+
+/*TODO:클릭 이벤트 처리 interface -> 인자로 받아서 처리 변경하기
+       좋아요 처리 변경하기
+ */
+
 
 class DetailActivity : AppCompatActivity() {
 
@@ -41,53 +46,50 @@ class DetailActivity : AppCompatActivity() {
             insets
         }
 
-        val dataList = intent.getParcelableExtra<MyItem>("dataList")
 
-        binding.ivPhoto.setImageResource(dataList!!.photo)
-        profileBarBinding.tvUsername.text = dataList.seller
-        profileBarBinding.tvAddress.text = dataList.address
-        descriptionBinding.tvDescription.text = dataList.desc
-        descriptionBinding.tvProductName.text = dataList.name
-        bottomBarBinding.tvPrice.text = priceRegex(dataList.price.toString())
+        val position = intent.getIntExtra("position", -1)
+        val data = MyItemObject.dataList[position]
+
+        binding.ivPhoto.setImageResource(data.photo)
+        profileBarBinding.tvUsername.text = data.seller
+        profileBarBinding.tvAddress.text = data.address
+        descriptionBinding.tvDescription.text = data.desc
+        descriptionBinding.tvProductName.text = data.name
+        bottomBarBinding.tvPrice.text = priceRegex(data.price.toString())
 
         //뒤로가기 버튼
         binding.icBack.setOnClickListener {
             finish()
-            val intent = Intent(this,MainActivity::class.java)
-            startActivity(intent)
         }
 
-
-
-
-        //좋아요 버튼 색깔 상태
-        if(MyInterestObject.myInterestList[dataList.number -1].likes == true){
-            bottomBarBinding.icHeart.setImageResource(R.drawable.ic_heart_colored)
-        }else{
-            bottomBarBinding.icHeart.setImageResource(R.drawable.ic_heart)
-        }
 
 
 
         //좋아요 버튼 누를시
         val likeBtn = bottomBarBinding.icHeart
 
+        if (data.interest){
+            likeBtn.setImageResource(R.drawable.ic_heart_colored)
+        }else{
+            likeBtn.setImageResource(R.drawable.ic_heart)
+        }
+
+
+
         likeBtn.setOnClickListener {
-
-            if(MyInterestObject.myInterestList[dataList.number-1].likes == false){
-                addLikes(dataList.number)
-                val snackbar = Snackbar.make(it, "관심 목록에 추가하였습니다",Snackbar.LENGTH_SHORT)
+            data.interest = !data.interest
+            if (data.interest) {
+                data.likes += 1
+                val snackbar = Snackbar.make(it, "관심 목록에 추가 하였습니다", Snackbar.LENGTH_SHORT)
                 snackbar.show()
-                MyInterestObject.myInterestList[dataList.number-1].likes = true
                 likeBtn.setImageResource(R.drawable.ic_heart_colored)
-            }else{
-                removeLikes(dataList.number)
-                val snackbar = Snackbar.make(it,"관심목록에서 제거하였습니다",Snackbar.LENGTH_SHORT)
+            } else {
+                data.likes -= 1
+                val snackbar = Snackbar.make(it, "관심 목록에서 제거 하였습니다", Snackbar.LENGTH_SHORT)
                 snackbar.show()
-                MyInterestObject.myInterestList[dataList.number-1].likes = false
                 likeBtn.setImageResource(R.drawable.ic_heart)
-
             }
+            MyItemObject.dataList[position] = data
         }
 
     }
