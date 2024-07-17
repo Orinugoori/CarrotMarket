@@ -13,7 +13,7 @@ data class MyItem(
     val price : Int,
     val address : String,
     var likes : Int,
-    val chat : Int
+    val chat : Int,
 ) : Parcelable
 
 val dataList : MutableList<MyItem> = getReviewList()
@@ -34,6 +34,7 @@ fun getReviewList() : MutableList<MyItem> {
             "서울 서대문구 창천동",
             13,
             25
+
         )
     )
     dataList.add(
@@ -47,6 +48,7 @@ fun getReviewList() : MutableList<MyItem> {
             "인천 계양구 귤현동",
             8,
             28
+
         )
     )
     dataList.add(
@@ -60,6 +62,7 @@ fun getReviewList() : MutableList<MyItem> {
             "수성구 범어동",
             23,
             5
+
         )
     )
     dataList.add(
@@ -73,6 +76,7 @@ fun getReviewList() : MutableList<MyItem> {
             "해운대구 우제 2동",
             14,
             17
+
         )
     )
     dataList.add(
@@ -86,6 +90,7 @@ fun getReviewList() : MutableList<MyItem> {
             "연제구 연산제 8동",
             22,
             16
+
         )
     )
     dataList.add(
@@ -99,6 +104,7 @@ fun getReviewList() : MutableList<MyItem> {
             "수원시 영통구 원천동",
             25,
             16
+
         )
     )
     dataList.add(
@@ -112,6 +118,7 @@ fun getReviewList() : MutableList<MyItem> {
             "남구 옥동",
             142,
             54
+
         )
     )
     dataList.add(
@@ -125,6 +132,7 @@ fun getReviewList() : MutableList<MyItem> {
             "동래구 온천제 2동",
             31,
             7
+
         )
     )
     dataList.add(
@@ -138,6 +146,7 @@ fun getReviewList() : MutableList<MyItem> {
             "원주시 명륜 2동",
             7,
             28
+
         )
     )
     dataList.add(
@@ -151,6 +160,7 @@ fun getReviewList() : MutableList<MyItem> {
             "중구 동화동",
             40,
             6
+
         )
     )
 

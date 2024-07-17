@@ -26,7 +26,7 @@ object MyInterestObject {
     }
 
     fun removeInterestItem(position : Int){
-        myInterestList.removeAt(position-1)
+//        myInterestList.removeAt(position-1)
     }
 
 }

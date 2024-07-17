@@ -94,6 +94,7 @@ class RecyclerAdapter(val mItems : MutableList<MyItem>) : ListAdapter<MyItem,Rec
     }
 
 }
+
 fun priceRegex(priceString: String): String {
     var finalPrice = ""
     if (priceString == "0") {
