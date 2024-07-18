@@ -54,7 +54,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_price"
         android:background="@drawable/corner_radius"
-        android:backgroundTint="#FF0000"/>
+        android:backgroundTint="@color/red"/>
 
 
 

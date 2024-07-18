@@ -6,14 +6,14 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.carrotmarketclone.databinding.HolderBinding
+import com.example.carrotmarketclone.databinding.TitleHolderBinding
 
 
 class RecyclerAdapter(
     val mItems: MutableList<MyItem>,
     val itemClick: (MyItem, Int) -> Unit?,
     val itemLongClick: (MyItem, Int) -> Unit?
-) : ListAdapter<MyItem, RecyclerAdapter.Holder>(object : DiffUtil.ItemCallback<MyItem>() {
-
+) : ListAdapter<MyItem, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<MyItem>() {
 
     override fun areItemsTheSame(oldItem: MyItem, newItem: MyItem): Boolean {
         return oldItem.number == newItem.number
@@ -23,24 +23,50 @@ class RecyclerAdapter(
         return oldItem == newItem
     }
 
-
 }) {
 
-    fun removeItem(position: Int) {
-        if (position in 0 until mItems.size) {
+    companion object{
+        private const val  VIEW_TYPE_TITLE = 1
+        private const val  VIEW_TYPE_REVIEW = 2
+    }
+
+    fun removeItem( position : Int) {
+        if (position in mItems.indices) {
             mItems.removeAt(position)
-            notifyItemRemoved(position)
+             notifyItemRemoved(position)
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerAdapter.Holder {
-        val binding = HolderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return Holder(binding)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            VIEW_TYPE_TITLE -> {
+                val binding = TitleHolderBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+                TitleHolder(binding)
+            }
+            VIEW_TYPE_REVIEW -> {
+                val binding =
+                    HolderBinding.inflate(LayoutInflater.from(parent.context), parent,false)
+                ReViewHolder(binding)
+            }
+            else -> throw IllegalArgumentException("Invalid view type")
+        }
+
+
     }
 
 
-    override fun onBindViewHolder(holder: RecyclerAdapter.Holder, position: Int) {
-        holder.bind(mItems[position])
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val item = mItems[position]
+        when (item){
+            is MyItem.Date -> {
+                val titleHolder = holder as TitleHolder
+                titleHolder.bind(item)
+            }
+            is MyItem.Data -> {
+                val reviewHolder = holder as ReViewHolder
+                reviewHolder.bind(item)
+            }
+        }
     }
 
 
@@ -48,9 +74,26 @@ class RecyclerAdapter(
         return mItems.size
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return when (mItems[position]) {
+            is MyItem.Date -> VIEW_TYPE_TITLE
+            is MyItem.Data -> VIEW_TYPE_REVIEW
+        }
+    }
 
-    inner class Holder(private val binding: HolderBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: MyItem) {
+    inner class TitleHolder(private val binding: TitleHolderBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: MyItem.Date) {
+            binding.apply {
+                tvTitleDate.text = item.date
+            }
+
+        }
+    }
+
+    inner class ReViewHolder(private val binding: HolderBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: MyItem.Data) {
             binding.apply {
                 ivPhoto.setImageResource(item.photo)
                 tvName.text = item.name
@@ -58,19 +101,18 @@ class RecyclerAdapter(
                 tvPrice.text = priceRegex(item.price.toString())
                 tvChat.text = item.chat.toString()
                 tvHeart.text = item.likes.toString()
-                if(item.interest){
+                if (item.interest) {
                     icHeart.setImageResource(R.drawable.ic_heart_colored)
-                }else{
+                } else {
                     icHeart.setImageResource(R.drawable.ic_heart)
                 }
 
-
                 layoutHolder.setOnClickListener {
-                    itemClick(item,adapterPosition)
+                    itemClick(item, adapterPosition)
                 }
 
                 layoutHolder.setOnLongClickListener {
-                    itemLongClick(item,adapterPosition)
+                    itemLongClick(item, adapterPosition)
                     true
                 }
 
@@ -78,6 +120,7 @@ class RecyclerAdapter(
         }
 
     }
+
 
 }
 

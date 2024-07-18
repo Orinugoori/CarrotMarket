@@ -49,7 +49,7 @@ class DetailActivity : AppCompatActivity() {
 
 
         val position = intent.getIntExtra("position", -1)
-        val data = MyItemObject.dataList[position]
+        val data = MyItemObject.dataList[position] as MyItem.Data
 
         binding.ivPhoto.setImageResource(data.photo)
         profileBarBinding.tvUsername.text = data.seller
