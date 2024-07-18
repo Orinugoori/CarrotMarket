@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResult
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -59,6 +60,9 @@ class DetailActivity : AppCompatActivity() {
 
         //뒤로가기 버튼
         binding.icBack.setOnClickListener {
+            val resultIntent = Intent()
+            resultIntent.putExtra("position",position)
+            setResult(Activity.RESULT_OK,resultIntent)
             finish()
         }
 

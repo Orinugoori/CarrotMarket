@@ -36,6 +36,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var recyclerAdapter: RecyclerAdapter
 
+    private lateinit var launcher : ActivityResultLauncher<Intent>
+    private var notifyPosition = 0
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -51,10 +55,27 @@ class MainActivity : AppCompatActivity() {
             notification()
         }
 
-        val itemClick = { item : MyItem, position:Int ->
+
+
+        launcher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult(),
+            object : ActivityResultCallback<ActivityResult> {
+                override fun onActivityResult(result: ActivityResult) {
+                    if (result.resultCode == RESULT_OK){
+                        result.data?.let {
+                            val resultData = it.getIntExtra("position",-1)
+                            notifyPosition = resultData
+                            recyclerAdapter.notifyItemChanged(resultData)
+                        }
+                    }
+                }
+            }
+        )
+
+        val itemClick = {item : MyItem, position:Int ->
             val intent = Intent(this@MainActivity, DetailActivity::class.java)
             intent.putExtra("position",position)
-            startActivity(intent)
+            launcher.launch(intent)
         }
 
         val itemLongClick = {item : MyItem, position : Int ->
@@ -69,7 +90,7 @@ class MainActivity : AppCompatActivity() {
                 .show()
         }
 
-        recyclerAdapter = RecyclerAdapter(MyItemObject.dataList, itemClick,itemLongClick)
+        recyclerAdapter = RecyclerAdapter(MyItemObject.dataList, itemClick, itemLongClick)
 
         binding.recyclerView.apply {
             this.adapter = recyclerAdapter
@@ -77,6 +98,7 @@ class MainActivity : AppCompatActivity() {
             val decoration = DividerItemDecoration(this@MainActivity, VERTICAL)
             this.addItemDecoration(decoration)
         }
+
 
         val floatingBtn = binding.floatingBtn
         val fadeIn = AlphaAnimation(0f, 1f).apply { duration = 400 }
@@ -108,8 +130,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        recyclerAdapter.notifyDataSetChanged()
+        recyclerAdapter.notifyItemChanged(notifyPosition)
     }
+
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -139,7 +162,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun notification() {
+    private fun notification() {
         val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         val builder: NotificationCompat.Builder
