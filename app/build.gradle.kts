@@ -42,10 +42,12 @@ android {
 
 
 
+
+
 }
 
 dependencies {
-    implementation("com.github.amarjain07:StickyScrollView:<latest-version>")
+    implementation("com.github.amarjain07:StickyScrollView:1.0.3")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -55,3 +57,4 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
+

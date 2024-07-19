@@ -1,6 +1,8 @@
 package com.example.carrotmarketclone
 
+import android.text.Layout
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -23,19 +25,36 @@ class RecyclerAdapter(
         return oldItem == newItem
     }
 
-}) {
+    }) {
 
-    companion object{
-        private const val  VIEW_TYPE_TITLE = 1
-        private const val  VIEW_TYPE_REVIEW = 2
-    }
-
-    fun removeItem( position : Int) {
-        if (position in mItems.indices) {
-            mItems.removeAt(position)
-             notifyItemRemoved(position)
+        companion object{
+            const val  VIEW_TYPE_TITLE = 1
+            const val  VIEW_TYPE_REVIEW = 2
         }
+
+        fun removeItem( position : Int) {
+            if (position in mItems.indices) {
+                mItems.removeAt(position)
+                notifyItemRemoved(position)
+            }
+        }
+
+        fun isHeader(position: Int): Boolean {
+        return getItemViewType(position) == RecyclerAdapter.VIEW_TYPE_TITLE
     }
+
+    fun getHeaderLayoutView(list: RecyclerView, position: Int) : View?{
+        val item = mItems[position]
+        if(item is MyItem.Date){
+            val headerView = LayoutInflater.from(list.context).inflate(R.layout.title_holder, list, false)
+            val headerBinding = TitleHolderBinding.bind(headerView)
+            headerBinding.tvTitleDate.text = item.date
+            return headerView
+        }
+        return null
+    }
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {

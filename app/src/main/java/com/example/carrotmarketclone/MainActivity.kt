@@ -95,9 +95,12 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerView.apply {
             this.adapter = recyclerAdapter
             this.layoutManager = LinearLayoutManager(this@MainActivity)
-            val decoration = DividerItemDecoration(this@MainActivity, VERTICAL)
-            this.addItemDecoration(decoration)
+            this.addItemDecoration(StickyHeaderItemDecoration(
+                this,
+                isHeader = { position -> recyclerAdapter.isHeader(position) }
+            ))
         }
+
 
 
         val floatingBtn = binding.floatingBtn
@@ -217,6 +220,8 @@ class MainActivity : AppCompatActivity() {
 
         manager.notify(11, builder.build())
     }
+
+
 
 }
 
