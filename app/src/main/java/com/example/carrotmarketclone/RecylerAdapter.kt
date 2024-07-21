@@ -43,19 +43,6 @@ class RecyclerAdapter(
         return getItemViewType(position) == RecyclerAdapter.VIEW_TYPE_TITLE
     }
 
-    fun getHeaderLayoutView(list: RecyclerView, position: Int) : View?{
-        val item = mItems[position]
-        if(item is MyItem.Date){
-            val headerView = LayoutInflater.from(list.context).inflate(R.layout.title_holder, list, false)
-            val headerBinding = TitleHolderBinding.bind(headerView)
-            headerBinding.tvTitleDate.text = item.date
-            return headerView
-        }
-        return null
-    }
-
-
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             VIEW_TYPE_TITLE -> {
@@ -72,7 +59,6 @@ class RecyclerAdapter(
 
 
     }
-
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = mItems[position]
@@ -106,7 +92,6 @@ class RecyclerAdapter(
             binding.apply {
                 tvTitleDate.text = item.date
             }
-
         }
     }
 
@@ -134,10 +119,8 @@ class RecyclerAdapter(
                     itemLongClick(item, adapterPosition)
                     true
                 }
-
             }
         }
-
     }
 
 
